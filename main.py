@@ -81,6 +81,21 @@ while True:
 
     # Dessiner les items
     for obstacle in obstacles:
+        
+        # Vérifier la collision
+        if (
+            hamster_x < obstacle.x + obstacle.largeur and
+            hamster_x + hamster_largeur > obstacle.x and
+            hamster_y < obstacle.y + obstacle.hauteur and
+            hamster_y + hamster_hauteur > obstacle.y
+        ):
+            print("Collision avec un obstacle!")
+            # Appeler la méthode utiliser de l'obstacle (l'item)
+            obstacle.utiliser()
+            # Supprimer l'obstacle de la liste
+            obstacles.remove(obstacle)
+            # Ajouter du score ou effectuer d'autres actions si nécessaire
+            
         obstacle.dessiner(fenetre, decor_x)
 
     # Mettre à jour l'affichage

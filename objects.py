@@ -25,7 +25,7 @@ class Fusée(Item):
 
     def utiliser(self):
         # Méthode spécifique à la fusée
-        pass
+        print("Activation d'une fusée")
 
     def dessiner(self, fenetre, decor_x):
         # Méthode pour dessiner la fusée
@@ -38,7 +38,7 @@ class Ventilateur(Item):
 
     def utiliser(self):
         # Méthode spécifique au ventilateur
-        pass
+        print("Activation d'un ventilo")
 
     def dessiner(self, fenetre, decor_x):
         # Méthode pour dessiner le ventilateur
@@ -51,7 +51,7 @@ class Balle(Item):
 
     def utiliser(self):
         # Méthode spécifique à la balle
-        pass
+        print("On récolte une balle")
 
     def dessiner(self, fenetre, decor_x):
         # Méthode pour dessiner la balle
@@ -64,7 +64,7 @@ class Tremplin(Item):
 
     def utiliser(self):
         # Méthode spécifique au tremplin
-        pass
+        print("Activation d'un tremplin")
 
     def dessiner(self, fenetre, decor_x):
         # Méthode pour dessiner le tremplin
