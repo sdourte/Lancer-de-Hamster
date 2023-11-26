@@ -36,12 +36,20 @@ def creer_obstacle():
     # Choisir une classe d'item aléatoirement
     item_classe = random.choice([Fusée, Ventilateur, Balle, Tremplin])
 
-    # Créer une instance de la classe d'item choisie avec des positions aléatoires
-    return item_classe(
-        x=hamster.x + largeur + random.randint(50, 200),
-        y=random.randint(50, hauteur - 50),
-        vitesse=2,  # Valeur arbitraire, à ajuster
-    )
+    if item_classe == Tremplin:
+        # Si c'est un tremplin, assurez-vous qu'il apparaît seulement sur le sol
+        return item_classe(
+            x=hamster.x + largeur + random.randint(50, 200),
+            y=hauteur - 40,  # Ajustez cette valeur pour le placer sur le sol
+            vitesse=2,  # Valeur arbitraire, à ajuster
+        )
+    else:
+        # Sinon, créez l'obstacle normalement avec des positions aléatoires
+        return item_classe(
+            x=hamster.x + largeur + random.randint(50, 200),
+            y=random.randint(50, hauteur - 50),
+            vitesse=2,  # Valeur arbitraire, à ajuster
+        )
 
 # Ajouter quelques obstacles au début
 obstacles.append(creer_obstacle())
@@ -54,7 +62,7 @@ while True:
             sys.exit()
             
         if event.type == pygame.MOUSEBUTTONDOWN:
-            hamster.vitesse_y -= elasticite
+            hamster.vitesse_y -= elasticite# Attention ici peut causer problème
 
     # Mise à jour de la position du hamster en fonction de la vitesse
     hamster.deplacer()
@@ -86,7 +94,8 @@ while True:
             obstacle.utiliser(hamster)
             
             # Supprimer l'obstacle de la liste
-            obstacles.remove(obstacle)
+            if obstacle.__class__ != Tremplin:
+                obstacles.remove(obstacle)
             # Ajouter du score ou effectuer d'autres actions si nécessaire
             
     # Vérifier l'état de l'accélération de la fusée

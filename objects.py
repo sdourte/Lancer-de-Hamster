@@ -42,7 +42,6 @@ class Fusée(Item):
 
     def utiliser(self, hamster):
         print("Activation d'une fusée")
-        hamster.vitesse_x += 5
         hamster.acceleration_time = pygame.time.get_ticks() + 2000  # Accélère pendant 2000 millisecondes (2 secondes)
 
     def dessiner(self, fenetre, decor_x):
@@ -54,9 +53,10 @@ class Ventilateur(Item):
         super().__init__(x, y, vitesse, largeur=20, hauteur=40)
         # Propriétés spécifiques au ventilateur
 
-    def utiliser(self, hamster_x):
+    def utiliser(self, hamster):
         # Méthode spécifique au ventilateur
         print("Activation d'un ventilo")
+        hamster.vitesse_y -= 20
 
     def dessiner(self, fenetre, decor_x):
         # Méthode pour dessiner le ventilateur
@@ -67,7 +67,7 @@ class Balle(Item):
         super().__init__(x, y, vitesse, largeur=20)
         # Propriétés spécifiques à la balle
 
-    def utiliser(self, hamster_x):
+    def utiliser(self, hamster):
         # Méthode spécifique à la balle
         print("On récolte une balle")
 
@@ -80,9 +80,11 @@ class Tremplin(Item):
         super().__init__(x, y, vitesse, largeur=20, hauteur=40)
         # Propriétés spécifiques au tremplin
 
-    def utiliser(self, hamster_x):
+    def utiliser(self, hamster):
         # Méthode spécifique au tremplin
         print("Activation d'un tremplin")
+        hamster.acceleration_time = pygame.time.get_ticks() + 2000
+        hamster.vitesse_y -= 30  # Ajustez cette valeur en fonction de la force désirée
 
     def dessiner(self, fenetre, decor_x):
         # Méthode pour dessiner le tremplin
