@@ -24,6 +24,11 @@ elasticite = 5  # Élasticité du hamster lorsqu'il rebondit
 
 # Score
 score = 0
+# Liste pour stocker les scores de chaque hamster
+scores = []
+
+# Au tour du hamster numéro
+hamster_turn = 0
 
 font = pygame.font.Font(None, 36)
 
@@ -70,6 +75,7 @@ while True:
         # Gestion de la touche espace pour démarrer la partie
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             en_partie = True
+            print("C'est le tour du hamster n°", hamster_turn+1)
             # Ajout de la vitesse initiale lorsque la partie démarre
             hamster.vitesse_y = vitesse_initiale
 
@@ -105,10 +111,13 @@ while True:
                 hamster.vitesse_y = 0  # Ajuster à 0 pour éviter que le hamster ne tombe automatiquement
 
                 # Ajouter des points en fonction de la distance parcourue
-                score += int(hamster.x - decor_x)
+                score_hamster = abs(int(hamster.x - decor_x))
 
-                # Revenir en arrière dans le décor
-                #decor_x = 0  # Ajustez la valeur 200 en fonction de vos besoins
+                # Ajouter le score à la liste des scores
+                scores.append(score_hamster)
+                
+                # Lorsqu'un hamster est stoppé, on lance le prochain
+                hamster_turn += 1
                 
                 # On stoppe le hamster
                 en_partie = False
@@ -168,6 +177,19 @@ while True:
     # Ajouter de nouveaux obstacles (maintenant des items)
     if en_partie and random.randint(0, 100) < 5:  # 5% de chance d'ajouter un nouvel obstacle
         obstacles.append(creer_obstacle())
+        
+    # On check s'ils ont tous été lancés
+    if hamster_turn == 5:
+        print("Tous les hamsters ont été lancés")
+        
+        # Afficher la somme des scores
+        for score in scores:
+            # Pour le mettre en positif
+            print("Score du hamster", scores.index(score), ":", score)
+        total_score = sum(scores)
+        print("Le score total est :", total_score)
+        
+        break
 
     # Réguler le taux de rafraîchissement de l'écran
     clock.tick(30)  # 30 FPS (tu peux ajuster cette valeur en fonction de tes besoins)
