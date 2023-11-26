@@ -152,6 +152,10 @@ while True:
     # Vérifications pour faire le retour en arrière
     if hamster.vitesse_y == 0 and decor_x != 0 and not en_partie:
         decor_x -= 20
+        # On enlève les obstacles qui étaient déjà là pour ne pas retomber dessus
+        while obstacles != []:
+            for obs in obstacles:
+                obstacles.remove(obs)
     # Si jamais le decor_x n'est pas modulo 20
     if decor_x < 0:
         decor_x = 0
