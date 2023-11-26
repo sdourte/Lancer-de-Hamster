@@ -1,5 +1,21 @@
 import pygame
 import random
+import time
+
+class Hamster:
+    def __init__(self, x, y, largeur, hauteur, vitesse_x, vitesse_y):
+        self.x = x
+        self.y = y
+        self.largeur = largeur
+        self.hauteur = hauteur
+        self.vitesse_x = vitesse_x
+        self.vitesse_y = vitesse_y
+        self.acceleration_time = 0
+
+    def deplacer(self):
+        # Méthode pour mettre à jour la position en fonction de la vitesse
+        self.x += self.vitesse_x
+        self.y += self.vitesse_y
 
 class Item:
     def __init__(self, x, y, vitesse, largeur=20, hauteur=20):
@@ -22,10 +38,12 @@ class Fusée(Item):
     def __init__(self, x, y, vitesse):
         super().__init__(x, y, vitesse, largeur=20, hauteur=40)
         # Propriétés spécifiques à la fusée
+        self.activation_time = 0
 
-    def utiliser(self):
-        # Méthode spécifique à la fusée
+    def utiliser(self, hamster):
         print("Activation d'une fusée")
+        hamster.vitesse_x += 5
+        hamster.acceleration_time = pygame.time.get_ticks() + 2000  # Accélère pendant 2000 millisecondes (2 secondes)
 
     def dessiner(self, fenetre, decor_x):
         # Méthode pour dessiner la fusée
@@ -36,7 +54,7 @@ class Ventilateur(Item):
         super().__init__(x, y, vitesse, largeur=20, hauteur=40)
         # Propriétés spécifiques au ventilateur
 
-    def utiliser(self):
+    def utiliser(self, hamster_x):
         # Méthode spécifique au ventilateur
         print("Activation d'un ventilo")
 
@@ -49,7 +67,7 @@ class Balle(Item):
         super().__init__(x, y, vitesse, largeur=20)
         # Propriétés spécifiques à la balle
 
-    def utiliser(self):
+    def utiliser(self, hamster_x):
         # Méthode spécifique à la balle
         print("On récolte une balle")
 
@@ -62,7 +80,7 @@ class Tremplin(Item):
         super().__init__(x, y, vitesse, largeur=20, hauteur=40)
         # Propriétés spécifiques au tremplin
 
-    def utiliser(self):
+    def utiliser(self, hamster_x):
         # Méthode spécifique au tremplin
         print("Activation d'un tremplin")
 

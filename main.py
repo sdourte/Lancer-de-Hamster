@@ -15,13 +15,7 @@ pygame.display.set_caption("Lancer de hamster")
 couleur_fond = (135, 206, 250)  # Bleu ciel
 
 # Position initiale du hamster
-hamster_x, hamster_y = 100, 450
-
-# Taille du hamster
-hamster_largeur, hamster_hauteur = 50, 50
-
-# Vitesse initiale du hamster
-vitesse_x, vitesse_y = 5, -8  # Valeurs arbitraires, à ajuster
+hamster = Hamster(x=100, y=450, largeur=50, hauteur=50, vitesse_x=5, vitesse_y=-8)
 
 elasticite = 5  # Élasticité du hamster lorsqu'il rebondit
 
@@ -44,7 +38,7 @@ def creer_obstacle():
 
     # Créer une instance de la classe d'item choisie avec des positions aléatoires
     return item_classe(
-        x=hamster_x + largeur + random.randint(50, 200),
+        x=hamster.x + largeur + random.randint(50, 200),
         y=random.randint(50, hauteur - 50),
         vitesse=2,  # Valeur arbitraire, à ajuster
     )
@@ -60,42 +54,51 @@ while True:
             sys.exit()
             
         if event.type == pygame.MOUSEBUTTONDOWN:
-            # Clic de la souris pour activer l'élasticité
-            vitesse_y -= elasticite
+            hamster.vitesse_y -= elasticite
 
     # Mise à jour de la position du hamster en fonction de la vitesse
-    hamster_x += vitesse_x
-    hamster_y += vitesse_y
+    hamster.deplacer()
 
     # Appliquer la gravité
-    vitesse_y += 0.5  # Valeur arbitraire, à ajuster
+    hamster.vitesse_y += 0.5  # Valeur arbitraire, à ajuster
 
     # Ajuster la position du décor en fonction du hamster
-    decor_x += vitesse_x
+    decor_x += hamster.vitesse_x
 
     # Dessiner la couleur de fond
     fenetre.fill(couleur_fond)
 
-    # Dessiner le hamster (utilisation d'un rectangle pour l'instant)
-    pygame.draw.rect(fenetre, (255, 69, 0), (hamster_x - decor_x, hamster_y, hamster_largeur, hamster_hauteur))
+    # Dessiner le hamster
+    pygame.draw.rect(fenetre, (255, 69, 0), (hamster.x - decor_x, hamster.y, hamster.largeur, hamster.hauteur))
 
     # Dessiner les items
     for obstacle in obstacles:
         
         # Vérifier la collision
         if (
-            hamster_x < obstacle.x + obstacle.largeur and
-            hamster_x + hamster_largeur > obstacle.x and
-            hamster_y < obstacle.y + obstacle.hauteur and
-            hamster_y + hamster_hauteur > obstacle.y
+            hamster.x < obstacle.x + obstacle.largeur and
+            hamster.x + hamster.largeur > obstacle.x and
+            hamster.y < obstacle.y + obstacle.hauteur and
+            hamster.y + hamster.hauteur > obstacle.y
         ):
             print("Collision avec un obstacle!")
             # Appeler la méthode utiliser de l'obstacle (l'item)
-            obstacle.utiliser()
+            obstacle.utiliser(hamster)
+            
             # Supprimer l'obstacle de la liste
             obstacles.remove(obstacle)
             # Ajouter du score ou effectuer d'autres actions si nécessaire
             
+    # Vérifier l'état de l'accélération de la fusée
+    if hamster.acceleration_time > pygame.time.get_ticks() and hamster.vitesse_x < 15:
+        # Si le temps d'accélération n'est pas écoulé, le hamster continue d'accélérer
+        hamster.vitesse_x += 10
+    else:
+        # Si le temps est écoulé, réinitialiser la vitesse du hamster
+        hamster.vitesse_x = 5  # Ajoutez la valeur correcte ici
+
+    # Dessiner les items après avoir vérifié la collision
+    for obstacle in obstacles:
         obstacle.dessiner(fenetre, decor_x)
 
     # Mettre à jour l'affichage
