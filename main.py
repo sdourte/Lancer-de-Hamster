@@ -15,7 +15,10 @@ pygame.display.set_caption("Lancer de hamster")
 couleur_fond = (135, 206, 250)  # Bleu ciel
 
 # Position initiale du hamster
-hamster = Hamster(x=100, y=450, largeur=50, hauteur=50, vitesse_x=5, vitesse_y=-8)
+hamster = Hamster(x=100, y=450, largeur=50, hauteur=50, vitesse_x=0, vitesse_y=0)  # Vitesse initialisée à 0
+
+# Vitesse initiale lorsque la partie démarre (ajoutée)
+vitesse_initiale = -10
 
 elasticite = 5  # Élasticité du hamster lorsqu'il rebondit
 
@@ -31,6 +34,9 @@ decor_x = 0
 
 # Créer une liste d'obstacles (items)
 obstacles = []
+
+# État de la partie (pause au début)
+en_partie = False
 
 def creer_obstacle():
     # Choisir une classe d'item aléatoirement
@@ -51,27 +57,55 @@ def creer_obstacle():
             vitesse=2,  # Valeur arbitraire, à ajuster
         )
 
-# Ajouter quelques obstacles au début
-obstacles.append(creer_obstacle())
-
 # Boucle de jeu
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-            
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            hamster.vitesse_y -= elasticite# Attention ici peut causer problème
 
-    # Mise à jour de la position du hamster en fonction de la vitesse
-    hamster.deplacer()
+        # Gestion de la touche espace pour démarrer la partie
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            en_partie = True
+            # Ajout de la vitesse initiale lorsque la partie démarre
+            hamster.vitesse_y = vitesse_initiale
 
-    # Appliquer la gravité
-    hamster.vitesse_y += 0.5  # Valeur arbitraire, à ajuster
+        if en_partie:  # Ajouter cette condition pour ignorer les événements si la partie est en pause
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                hamster.vitesse_y -= elasticite  # Attention ici peut causer problème
 
-    # Ajuster la position du décor en fonction du hamster
-    decor_x += hamster.vitesse_x
+    if en_partie:  # Ajouter cette condition pour ignorer la mise à jour du hamster si la partie est en pause
+        # Mise à jour de la position du hamster en fonction de la vitesse
+        hamster.deplacer()
+
+        # Appliquer la gravité
+        hamster.vitesse_y += 0.5  # Valeur arbitraire, à ajuster
+
+        # Si le hamster est au sol, ajuster son comportement
+        if hamster.y >= hauteur - hamster.hauteur:
+            hamster.y = hauteur - hamster.hauteur  # Ajuster la position au sol
+            hamster.vitesse_y = -hamster.vitesse_y * 0.5  # Rebondir avec une élasticité réduite
+
+            # Si la vitesse en x est très faible, le hamster s'arrête complètement
+            if abs(hamster.vitesse_x) < 0.1:
+                hamster.vitesse_x = 0
+
+                # Ici, vous pouvez ajouter la logique pour lancer le hamster suivant
+                # Réinitialiser la position initiale, la vitesse, etc.
+                hamster.x = 100
+                hamster.y = 450
+                hamster.vitesse_x = 0  # Mise à 0 pour s'assurer que le hamster est complètement arrêté
+                hamster.vitesse_y = 0  # Ajuster à 0 pour éviter que le hamster ne tombe automatiquement
+
+                # Ajouter des points ou effectuer d'autres actions si nécessaire
+                score += 1
+
+        # Ajuster la position du décor en fonction du hamster
+        decor_x += hamster.vitesse_x
+
+        # Si la vitesse du hamster est nulle, réduire la vitesse du décor pour l'arrêter également
+        if hamster.vitesse_x != 0:
+            hamster.vitesse_x *= 0.9  # Décélération du hamster
 
     # Dessiner la couleur de fond
     fenetre.fill(couleur_fond)
@@ -81,7 +115,6 @@ while True:
 
     # Dessiner les items
     for obstacle in obstacles:
-        
         # Vérifier la collision
         if (
             hamster.x < obstacle.x + obstacle.largeur and
@@ -92,14 +125,14 @@ while True:
             print("Collision avec un obstacle!")
             # Appeler la méthode utiliser de l'obstacle (l'item)
             obstacle.utiliser(hamster)
-            
+
             # Supprimer l'obstacle de la liste
             if obstacle.__class__ != Tremplin:
                 obstacles.remove(obstacle)
             # Ajouter du score ou effectuer d'autres actions si nécessaire
-            
+
     # Vérifier l'état de l'accélération de la fusée
-    if hamster.acceleration_time > pygame.time.get_ticks() and hamster.vitesse_x < 15:
+    if en_partie and hamster.acceleration_time > pygame.time.get_ticks() and hamster.vitesse_x < 15:
         # Si le temps d'accélération n'est pas écoulé, le hamster continue d'accélérer
         hamster.vitesse_x += 10
     else:
@@ -117,7 +150,7 @@ while True:
     obstacles = [obstacle for obstacle in obstacles if obstacle.x + obstacle.largeur > decor_x]
 
     # Ajouter de nouveaux obstacles (maintenant des items)
-    if random.randint(0, 100) < 5:  # 5% de chance d'ajouter un nouvel obstacle
+    if en_partie and random.randint(0, 100) < 5:  # 5% de chance d'ajouter un nouvel obstacle
         obstacles.append(creer_obstacle())
 
     # Réguler le taux de rafraîchissement de l'écran
