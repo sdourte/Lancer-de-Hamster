@@ -56,9 +56,9 @@ def creer_obstacle():
             y=random.randint(50, hauteur - 50),
             vitesse=2,  # Valeur arbitraire, à ajuster
         )
-
-# Condition d'arrêt
-rebonds = 0
+        
+# Nouvelles variables pour le décrément progressif du décor
+temps_dernier_hamster = pygame.time.get_ticks()
 
 # Boucle de jeu
 while True:
@@ -86,14 +86,16 @@ while True:
 
         # Si le hamster est au sol, ajuster son comportement
         if hamster.y >= hauteur - hamster.hauteur:
-            rebonds += 1
             hamster.y = hauteur - hamster.hauteur  # Ajuster la position au sol
             hamster.vitesse_y = -hamster.vitesse_y * 0.5  # Rebondir avec une élasticité réduite
             print(hamster.vitesse_x, decor_x)
 
             # Si la vitesse en x est très faible, le hamster s'arrête complètement
-            if rebonds == 10:
-                rebonds = 0
+            # On vérifie la vitesse y du hamster pour voir quand il ne rebondit plus
+            if hamster.vitesse_y > -1:
+                
+                # On fait glisser le hamster
+                hamster.vitesse_y = 0
 
                 # Ici, vous pouvez ajouter la logique pour lancer le hamster suivant
                 # Réinitialiser la position initiale, la vitesse, etc.
@@ -106,7 +108,7 @@ while True:
                 score += int(hamster.x - decor_x)
 
                 # Revenir en arrière dans le décor
-                decor_x = 0  # Ajustez la valeur 200 en fonction de vos besoins
+                #decor_x = 0  # Ajustez la valeur 200 en fonction de vos besoins
                 
                 # On stoppe le hamster
                 en_partie = False
@@ -137,6 +139,13 @@ while True:
             if obstacle.__class__ != Tremplin:
                 obstacles.remove(obstacle)
             # Ajouter du score ou effectuer d'autres actions si nécessaire
+            
+    # Vérifications pour faire le retour en arrière
+    if hamster.vitesse_y == 0 and decor_x != 0 and not en_partie:
+        decor_x -= 20
+    # Si jamais le decor_x n'est pas modulo 20
+    if decor_x < 0:
+        decor_x = 0
 
     # Vérifier l'état de l'accélération de la fusée
     if en_partie and hamster.acceleration_time > pygame.time.get_ticks() and hamster.vitesse_x < 15:

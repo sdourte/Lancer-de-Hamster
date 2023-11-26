@@ -89,3 +89,6 @@ class Tremplin(Item):
     def dessiner(self, fenetre, decor_x):
         # Méthode pour dessiner le tremplin
         pygame.draw.rect(fenetre, (0, 0, 255), (self.x - decor_x, self.y, self.largeur, self.hauteur))
+
+class Skate():
+    pass
