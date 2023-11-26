@@ -57,6 +57,9 @@ def creer_obstacle():
             vitesse=2,  # Valeur arbitraire, à ajuster
         )
 
+# Condition d'arrêt
+rebonds = 0
+
 # Boucle de jeu
 while True:
     for event in pygame.event.get():
@@ -83,12 +86,14 @@ while True:
 
         # Si le hamster est au sol, ajuster son comportement
         if hamster.y >= hauteur - hamster.hauteur:
+            rebonds += 1
             hamster.y = hauteur - hamster.hauteur  # Ajuster la position au sol
             hamster.vitesse_y = -hamster.vitesse_y * 0.5  # Rebondir avec une élasticité réduite
+            print(hamster.vitesse_x, decor_x)
 
             # Si la vitesse en x est très faible, le hamster s'arrête complètement
-            if abs(hamster.vitesse_x) < 0.1:
-                hamster.vitesse_x = 0
+            if rebonds == 10:
+                rebonds = 0
 
                 # Ici, vous pouvez ajouter la logique pour lancer le hamster suivant
                 # Réinitialiser la position initiale, la vitesse, etc.
@@ -97,15 +102,17 @@ while True:
                 hamster.vitesse_x = 0  # Mise à 0 pour s'assurer que le hamster est complètement arrêté
                 hamster.vitesse_y = 0  # Ajuster à 0 pour éviter que le hamster ne tombe automatiquement
 
-                # Ajouter des points ou effectuer d'autres actions si nécessaire
-                score += 1
+                # Ajouter des points en fonction de la distance parcourue
+                score += int(hamster.x - decor_x)
+
+                # Revenir en arrière dans le décor
+                decor_x = 0  # Ajustez la valeur 200 en fonction de vos besoins
+                
+                # On stoppe le hamster
+                en_partie = False
 
         # Ajuster la position du décor en fonction du hamster
         decor_x += hamster.vitesse_x
-
-        # Si la vitesse du hamster est nulle, réduire la vitesse du décor pour l'arrêter également
-        if hamster.vitesse_x != 0:
-            hamster.vitesse_x *= 0.9  # Décélération du hamster
 
     # Dessiner la couleur de fond
     fenetre.fill(couleur_fond)
