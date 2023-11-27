@@ -3,13 +3,14 @@ import random
 import time
 
 class Hamster:
-    def __init__(self, x, y, largeur, hauteur, vitesse_x, vitesse_y):
+    def __init__(self, x, y, largeur, hauteur, vitesse_x, vitesse_y, balle):
         self.x = x
         self.y = y
         self.largeur = largeur
         self.hauteur = hauteur
         self.vitesse_x = vitesse_x
         self.vitesse_y = vitesse_y
+        self.balle = balle
         self.acceleration_time = 0
 
     def deplacer(self):
@@ -60,20 +61,33 @@ class Ventilateur(Item):
 
     def dessiner(self, fenetre, decor_x):
         # Méthode pour dessiner le ventilateur
-        pygame.draw.rect(fenetre, (0, 255, 0), (self.x - decor_x, self.y, self.largeur, self.hauteur))
+        pygame.draw.rect(fenetre, (169,169,169), (self.x - decor_x, self.y, self.largeur, self.hauteur))
 
 class Balle(Item):
-    def __init__(self, x, y, vitesse):
+    def __init__(self, x, y, vitesse, couleur):
         super().__init__(x, y, vitesse, largeur=20)
         # Propriétés spécifiques à la balle
-
+        self.couleur = couleur
+        
     def utiliser(self, hamster):
-        # Méthode spécifique à la balle
         print("On récolte une balle")
+
+    def rebondir(self, hamster, couleur):
+        # Méthode spécifique à la balle
+        print("On utilise une balle")
+        if couleur == "rose":
+            #print("rosssseeeee lààààààààààà")
+            hamster.vitesse_y -= 30
+        elif couleur == "jaune":
+            hamster.vitesse_y -= 50
+        #hamster.vitesse_y -= rebond
 
     def dessiner(self, fenetre, decor_x):
         # Méthode pour dessiner la balle
-        pygame.draw.circle(fenetre, (0, 0, 255), (int(self.x - decor_x), int(self.y)), self.largeur)
+        if self.couleur == "rose":
+            pygame.draw.circle(fenetre, (255,20,147), (int(self.x - decor_x), int(self.y)), self.largeur)
+        if self.couleur == "jaune":
+            pygame.draw.circle(fenetre, (255, 255, 0), (int(self.x - decor_x), int(self.y)), self.largeur)
 
 class Tremplin(Item):
     def __init__(self, x, y, vitesse):
@@ -88,7 +102,7 @@ class Tremplin(Item):
 
     def dessiner(self, fenetre, decor_x):
         # Méthode pour dessiner le tremplin
-        pygame.draw.rect(fenetre, (0, 0, 255), (self.x - decor_x, self.y, self.largeur, self.hauteur))
+        pygame.draw.rect(fenetre, (139,69,19), (self.x - decor_x, self.y, self.largeur, self.hauteur))
 
 class Skate():
     pass
