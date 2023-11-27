@@ -75,11 +75,18 @@ class Balle(Item):
     def rebondir(self, hamster, couleur):
         # Méthode spécifique à la balle
         print("On utilise une balle")
-        if couleur == "rose":
-            #print("rosssseeeee lààààààààààà")
-            hamster.vitesse_y -= 30
-        elif couleur == "jaune":
-            hamster.vitesse_y -= 50
+        # On fait une condition pour gérer le cas où la vitesse n'est pas très grande mais faut quand même que ça rebondisse
+        if hamster.vitesse_y <= 20:
+            if couleur == "rose":
+                hamster.vitesse_y = -15
+            elif couleur == "jaune":
+                hamster.vitesse_y = -30
+        else:
+            # Ici on part du principe que plus on tombe de haut, plus on va rebondir
+            if couleur == "rose":
+                hamster.vitesse_y = -hamster.vitesse_y * 1.2
+            elif couleur == "jaune":
+                hamster.vitesse_y = -hamster.vitesse_y * 1.4
         #hamster.vitesse_y -= rebond
 
     def dessiner(self, fenetre, decor_x):

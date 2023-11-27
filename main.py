@@ -99,14 +99,9 @@ while True:
         hamster.vitesse_y += 0.5  # Valeur arbitraire, à ajuster
 
         # Si le hamster est au sol, ajuster son comportement
-        print(hamster.y)
-        print(hauteur - hamster.hauteur)
         if hamster.y >= hauteur - hamster.hauteur:
             # On gère le cas où le hamster a une balle
-            #print("Je peux rebondir ?", hamster.balle != None)
             if hamster.balle != None:
-                #print("Utilisation de la balle")
-                #print(hamster.balle, hamster.balle.couleur)
                 hamster.balle.rebondir(hamster, hamster.balle.couleur)
                 hamster.balle = None
             else:
@@ -116,29 +111,30 @@ while True:
 
                 # Si la vitesse en x est très faible, le hamster s'arrête complètement
                 # On vérifie la vitesse y du hamster pour voir quand il ne rebondit plus
-                if hamster.vitesse_y > -1:
-                    
-                    # On fait glisser le hamster
-                    hamster.vitesse_y = 0
+                if hamster.balle == None:# sécurité pour être sûr qu'on ne fasse pas perdre la balle si elle tombe de haut
+                    if hamster.vitesse_y > -1:
+                        
+                        # On fait glisser le hamster
+                        hamster.vitesse_y = 0
 
-                    # Ici, vous pouvez ajouter la logique pour lancer le hamster suivant
-                    # Réinitialiser la position initiale, la vitesse, etc.
-                    hamster.x = 100
-                    hamster.y = 450
-                    hamster.vitesse_x = 0  # Mise à 0 pour s'assurer que le hamster est complètement arrêté
-                    hamster.vitesse_y = 0  # Ajuster à 0 pour éviter que le hamster ne tombe automatiquement
+                        # Ici, vous pouvez ajouter la logique pour lancer le hamster suivant
+                        # Réinitialiser la position initiale, la vitesse, etc.
+                        hamster.x = 100
+                        hamster.y = 450
+                        hamster.vitesse_x = 0  # Mise à 0 pour s'assurer que le hamster est complètement arrêté
+                        hamster.vitesse_y = 0  # Ajuster à 0 pour éviter que le hamster ne tombe automatiquement
 
-                    # Ajouter des points en fonction de la distance parcourue
-                    score_hamster = abs(int(hamster.x - decor_x))
+                        # Ajouter des points en fonction de la distance parcourue
+                        score_hamster = abs(int(hamster.x - decor_x))
 
-                    # Ajouter le score à la liste des scores
-                    scores.append(score_hamster)
-                    
-                    # Lorsqu'un hamster est stoppé, on lance le prochain
-                    hamster_turn += 1
-                    
-                    # On stoppe le hamster
-                    en_partie = False
+                        # Ajouter le score à la liste des scores
+                        scores.append(score_hamster)
+                        
+                        # Lorsqu'un hamster est stoppé, on lance le prochain
+                        hamster_turn += 1
+                        
+                        # On stoppe le hamster
+                        en_partie = False
 
         # Ajuster la position du décor en fonction du hamster
         decor_x += hamster.vitesse_x
